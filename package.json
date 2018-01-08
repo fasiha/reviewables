@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "binary-search": "^1.3.2",
+    "lodash.shuffle": "^4.2.0"
+  },
+  "name": "reviewable",
+  "version": "1.0.0",
+  "main": "review.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
