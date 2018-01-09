@@ -2,25 +2,15 @@
 var fs = require('fs');
 var util = require('util');
 
-var bs = require("binary-search");
 var shuffle = require('lodash.shuffle');
 
 var ruby = require('./ruby');
 var cliPrompt = require('./cliPrompt');
+var closestButNotOver = require('./closestButNotOver');
 
 //
 // PARSING
 //
-function findClosestButNotOver(arr, i, cmp) {
-  cmp = cmp || ((a, b) => a - b);
-  var hit = bs(arr, i, cmp);
-  if (hit >= 0) {
-    return i;
-  } else if (hit === -1) {
-    return -Infinity;
-  }
-  return arr[-hit - 2];
-}
 async function parseFile(filename) {
   const RUBY_PREFIX = '- Ruby:';
   let contents = await util.promisify(fs.readFile)(filename, 'utf8');
@@ -31,7 +21,7 @@ async function parseFile(filename) {
   let reviewables = lines.map((s, i) => [s, i]).filter(([ s, i ]) => s.startsWith(RUBY_PREFIX));
   return reviewables.map(([ s, i ]) => ({
     fact : ruby.parseMarkdownLinkRuby(s.slice((RUBY_PREFIX).length).trim()),
-    header : findClosestButNotOver(headers, i, (a, b) => a[1] - b)[0]
+    header : closestButNotOver(headers, i, (a, b) => a[1] - b)[0]
   }));
 }
 
@@ -60,7 +50,7 @@ function presentQuiz(review, reviewables) {
 }
 
 //
-// Grade and display
+// Grade
 //
 function headerToHash(header) {
   let res = header.match(/#+\s*(.*)/);
