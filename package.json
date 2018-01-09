@@ -7,7 +7,12 @@
   "name": "reviewable",
   "version": "1.0.0",
   "main": "review.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/node": "^9.3.0",
+    "browserify": "^15.0.0",
+    "typescript": "^2.6.2",
+    "typescript-formatter": "^7.0.1"
+  },
   "scripts": {
     "test": "./node_modules/.bin/tape tests/**/*js"
   },
