@@ -12,9 +12,9 @@ module.exports = function closestButNotOver(arr, i, cmp, skipCheck) {
   }
   var hit = bs(arr, i, cmp);
   if (hit >= 0) {
-    return i;
+    return arr[hit];
   } else if (hit === -1) {
-    return -Infinity;
+    return null;
   }
   return arr[-hit - 2];
 };
