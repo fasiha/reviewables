@@ -32,9 +32,11 @@ if (require.main === module) {
         let reviewables = modules.map(mod => mod.parseText(text));
         let reviews = modules.map((mod, modidx) => (reviewables[modidx] as any).map(mod.reviewableToReview));
         if (Math.max(...reviews.map(x => x.length)) > 0) {
-
-            let pickedForReviews = reviews.map((reviews, modidx) => [reviews.reduce(
-                (prev: any, curr: any) => curr.recallProbability > prev.recallProbability ? prev : curr), modidx]);
+            let pickedForReviews = reviews
+                .map((reviews, modidx) => reviews.length
+                    ? [reviews.reduce((prev: any, curr: any) => curr.recallProbability > prev.recallProbability ? prev : curr), modidx]
+                    : [])
+                .filter(x => x.length);
 
             let [pickedForReview, moduleIdx] = pickedForReviews.reduce((prev, curr) => curr[0].recallProbability > prev[0].recallProbability ? prev : curr);
 
