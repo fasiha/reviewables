@@ -22,7 +22,7 @@ interface FactModule {
     presentQuiz: (review: Review, reviewables: Reviewable[]) => QuizMetadata;
     gradeAndDisplay: (result: string, quiz: QuizMetadata, review: Review, reviewables: Reviewable[]) => QuizResult;
 }
-const mod: FactModule = { parseText, reviewableToReview, presentQuiz, gradeAndDisplay };
+export const mod: FactModule = { parseText, reviewableToReview, presentQuiz, gradeAndDisplay };
 
 function parseText(contents: string): Reviewable[] {
     const RUBY_PREFIX = '- Ruby:';

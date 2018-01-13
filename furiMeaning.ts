@@ -21,13 +21,13 @@ interface Reviewable {
 }
 type QuizMetadata = Reviewable[];
 type QuizResult = any;
-// interface FactModule {
-//     parseText: (contents: string) => Reviewable[];
-//     reviewableToReview: (reviewable: Reviewable) => Review;
-//     presentQuiz: (review: Review, reviewables: Reviewable[]) => QuizMetadata;
-//     gradeAndDisplay: (result: string, quiz: QuizMetadata, review: Review, reviewables: Reviewable[]) => QuizResult;
-// }
-// const mod: FactModule = { parseText, reviewableToReview, presentQuiz, gradeAndDisplay };
+interface FactModule {
+    parseText: (contents: string) => Reviewable[];
+    reviewableToReview: (reviewable: Reviewable) => Review;
+    presentQuiz: (review: Review, reviewables: Reviewable[]) => QuizMetadata;
+    gradeAndDisplay: (result: string, quiz: QuizMetadata, review: Review, reviewables: Reviewable[]) => QuizResult;
+}
+export const mod: FactModule = { parseText, reviewableToReview, presentQuiz, gradeAndDisplay };
 
 function parseText(contents: string): Reviewable[] {
     const PREFIX = '- Review ';
@@ -145,13 +145,3 @@ if (require.main === module) {
         }
     })();
 }
-
-
-// // Parse file -> pick which to review -> display review (with confusers, etc.) -> grade and display result -> log review
-// if (require.main === module) {
-//     (async function() {
-//         let text = await util.promisify(fs.readFile)('Vocab.md', 'utf8');
-//         let reviewables = parseText(text);
-//         console.log(reviewables);
-//     })();
-// }

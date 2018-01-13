@@ -42,7 +42,7 @@ export function furiganaStringToReading(arr: Furigana[]): string {
     return arr.map(o => typeof (o) === 'string' ? o : o.rt).join('');
 }
 
-export function kanjis(arr:Furigana[]) {
+export function kanjis(arr: Furigana[]) {
     return dedupeViaSets(furiganaStringToPlain(arr).split(''));
 }
 
