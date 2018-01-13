@@ -1,5 +1,3 @@
-"use strict";
-import * as assert from "assert";
 var bs = require("binary-search");
 export default function closestButNotOver<T, U>(arr: T[],
     i: U,
@@ -9,7 +7,7 @@ export default function closestButNotOver<T, U>(arr: T[],
     if (!skipCheck) {
         for (let i = 1; i < arr.length; i++) {
             if (cmp(arr[i], arr[i - 1] as any) < 0) {
-                assert(false, 'sorted array required');
+                throw new RangeError('sorted array required');
             }
         }
     }

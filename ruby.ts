@@ -1,3 +1,5 @@
+import dedupeViaSets from './dedupeViaSets';
+
 export interface Ruby {
     ruby: string;
     rt: string;
@@ -29,11 +31,19 @@ export function parseMarkdownLinkRuby(s: string): Furigana[] {
     // Converts my "fake" Ruby syntax using Markdown links: `a[b](c)d`.
     return parseBracketedFormat(s, /^\[([^\]]+)\]\(([^)]+)\)/);
 }
+export function parseStackExchangeRuby(s: string): Furigana[] {
+    // Converts StackExchange's Ruby syntax: `a[b]{c}d`.
+    return parseBracketedFormat(s, /^\[([^\]]+)\]{([^}]+)}/);
+}
 export function furiganaStringToPlain(arr: Furigana[]): string {
     return arr.map(o => typeof (o) === 'string' ? o : o.ruby).join('');
 }
 export function furiganaStringToReading(arr: Furigana[]): string {
     return arr.map(o => typeof (o) === 'string' ? o : o.rt).join('');
+}
+
+export function kanjis(arr:Furigana[]) {
+    return dedupeViaSets(furiganaStringToPlain(arr).split(''));
 }
 
 export function rubyfy(s: string): string {

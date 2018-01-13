@@ -1,7 +1,7 @@
 "use strict";
 var test = require('tape');
 
-var closestButNotOver = require('../closestButNotOver');
+var closestButNotOver = require('../closestButNotOver').default;
 
 test('basic', function(t) {
   let arr = [ 10, 20, 30, 40 ];
@@ -28,7 +28,7 @@ test('comparator', function(t) {
 
 test('skip sort check', function(t) {
   let arr = [ 4, 3 ];
-  t.throws(() => closestButNotOver(arr, 2), /AssertionError/);
+  t.throws(() => closestButNotOver(arr, 2), /RangeError/);
   t.doesNotThrow(() => closestButNotOver(arr, 2, undefined, true));
   
   arr = [3, 4, 5];
