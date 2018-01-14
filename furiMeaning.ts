@@ -90,7 +90,7 @@ function reviewableToReview(reviewable: Reviewable, logs: QuizResult[]): Review 
     if (relevantLog) {
         previousTime = relevantLog.time;
         previousMemory = relevantLog.memory;
-        recallProbability = ebisu.predictRecall(previousMemory, elapsedHours(previousTime, new Date()));
+        recallProbability = ebisu.predictRecall(previousMemory, elapsedHours(new Date(previousTime), new Date()));
     }
     return {
         reviewable,
@@ -134,7 +134,7 @@ function gradeAndDisplay(result: string, quiz: QuizMetadata, review: Review, rev
         console.log(`${ruby.furiganaStringToPlain(review.reviewable.fact.furigana)} : ${
             ruby.furiganaStringToReading(review.reviewable.fact.furigana)}`);
         console.log(`Visit ${headerToHash(review.reviewable.header)}`);
-        return { result, quiz, review, pass: false, passive: false, time, memory: previousMemoryModel };
+        return { result, quiz, review, pass: false, passive: false, time, memory: previousMemoryModel || DEFAULT_MEMORY_MODEL };
     }
     if (review.subreview === 'kanji') {
         let idx = validateNumber(result) - 1;
@@ -184,12 +184,16 @@ function gradeAndDisplay(result: string, quiz: QuizMetadata, review: Review, rev
 // Parse file -> pick which to review -> display review (with confusers, etc.) -> grade and display result -> log review
 if (require.main === module) {
     (async function() {
+        const RECALL_FLOOR = 0.5;
         let text = await util.promisify(fs.readFile)('Vocab.md', 'utf8');
         let reviewables = parseText(text);
         let logs = await loadReviews('reviews');
         let reviews = reviewables.map(reviewable => reviewableToReview(reviewable, logs));
         if (reviews.length > 0) {
             let pickedForReview = reviews.reduce((prev, curr) => curr.recallProbability > prev.recallProbability ? prev : curr);
+            if (pickedForReview.recallProbability > RECALL_FLOOR) {
+                pickedForReview = reviews.find(review=>review.recallProbability > 1) || pickedForReview;
+            }
             let quizDetails = presentQuiz(pickedForReview, reviewables);
             let enteredText = await cliPrompt();
             let toLog = gradeAndDisplay(enteredText, quizDetails, pickedForReview, reviewables);
