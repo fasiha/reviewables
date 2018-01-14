@@ -6,6 +6,7 @@
     "lodash.shuffle": "^4.2.0",
     "lodash.zip": "^4.2.0",
     "mkdirp": "^0.5.1",
+    "node-getopt": "^0.2.3",
     "tape": "^4.8.0"
   },
   "name": "reviewable",

@@ -184,21 +184,34 @@ function gradeAndDisplay(result: string, quiz: QuizMetadata, review: Review, rev
 // Parse file -> pick which to review -> display review (with confusers, etc.) -> grade and display result -> log review
 if (require.main === module) {
     (async function() {
-        const RECALL_FLOOR = 0.5;
+        let opt = require('node-getopt').create([
+            ['u', 'user=ARG', 'user directory of reviews'],
+            ['p', 'prob=ARG', 'recall probabilities above this will not be reviewed'],
+            ['h', 'help', 'display this help'],
+        ])
+            .bindHelp()
+            .parseSystem();
+
+        let RECALL_FLOOR = opt.options.prob ? parseFloat(opt.options.prob) : 0.5;
+        let thisUser: string = opt.options.user;
+        if (!thisUser) {
+            console.log('I require a `--user [DIRECTORY]` flag to tell me who you are.');
+            process.exit(2)
+        }
         let text = await util.promisify(fs.readFile)('Vocab.md', 'utf8');
         let reviewables = parseText(text);
-        let logs = await loadReviews('reviews');
+        let logs = await loadReviews(thisUser);
         let reviews = reviewables.map(reviewable => reviewableToReview(reviewable, logs));
         if (reviews.length > 0) {
             let pickedForReview = reviews.reduce((prev, curr) => curr.recallProbability > prev.recallProbability ? prev : curr);
             if (pickedForReview.recallProbability > RECALL_FLOOR) {
-                pickedForReview = reviews.find(review=>review.recallProbability > 1) || pickedForReview;
+                pickedForReview = reviews.find(review => review.recallProbability > 1) || pickedForReview;
             }
             let quizDetails = presentQuiz(pickedForReview, reviewables);
             let enteredText = await cliPrompt();
             let toLog = gradeAndDisplay(enteredText, quizDetails, pickedForReview, reviewables);
             if (toLog) {
-                logReview(toLog, 'l1');
+                logReview(toLog, thisUser, 'l1');
             }
         }
     })();
