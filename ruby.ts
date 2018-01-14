@@ -41,6 +41,9 @@ export function furiganaStringToPlain(arr: Furigana[]): string {
 export function furiganaStringToReading(arr: Furigana[]): string {
     return arr.map(o => typeof (o) === 'string' ? o : o.rt).join('');
 }
+export function furiganaStringToBoth(arr: Furigana[]): string {
+    return furiganaStringToPlain(arr) + '/' + furiganaStringToReading(arr);
+}
 
 export function kanjis(arr: Furigana[]) {
     return dedupeViaSets(furiganaStringToPlain(arr).split(''));

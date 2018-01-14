@@ -15,20 +15,15 @@ function slurp(name: string): Promise<string> {
 function flatten1<T>(arr: T[][]): T[] {
     return arr.reduce((prev, curr) => prev.concat(curr));
 }
-// function flatten1(arr:T) {
-//     arr.reduce((prev:any, curr:any)=>prev.concat(curr));
-// }
 if (require.main === module) {
     (async function() {
-        // process.argv.forEach((x,i)=>console.log(`${i} => ${x}`));
         var mds = process.argv.filter(s => s.toLocaleLowerCase().endsWith('.md'));
-        if (mds.length) {
-            var contents = await Promise.all(mds.map(slurp));
-            var text = contents.join('\n');
-        } else {
+        if (mds.length === 0) {
             console.log('Pass in some .md files');
             process.exit(1);
         }
+        var contents = await Promise.all(mds.map(slurp));
+        var text = contents.join('\n');
         let reviewables = modules.map(mod => mod.parseText(text));
         let reviews = modules.map((mod, modidx) => (reviewables[modidx] as any).map(mod.reviewableToReview));
         if (Math.max(...reviews.map(x => x.length)) > 0) {
