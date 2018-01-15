@@ -128,12 +128,12 @@ function validateNumber(input: string) { return (input.search(/^[0-9]+$/) === 0)
 function gradeAndDisplay(result: string, quiz: QuizMetadata, review: Review, reviewables: Reviewable[]): QuizResult | null {
     let time = new Date();
     let previousMemoryModel = review.previousMemory;
-    let previousTime = review.previousTime;
+    let previousTime = review.previousTime ? new Date(review.previousTime) : review.previousTime;
     if (result.indexOf('?') >= 0) {
         // don't know
         console.log(`${ruby.furiganaStringToPlain(review.reviewable.fact.furigana)} : ${
-            ruby.furiganaStringToReading(review.reviewable.fact.furigana)}`);
-        console.log(`Visit ${headerToHash(review.reviewable.header)}`);
+            ruby.furiganaStringToReading(review.reviewable.fact.furigana)}: ${review.reviewable.fact.meaning}`);
+        // console.log(`Visit ${headerToHash(review.reviewable.header)}`);
         return { result, quiz, review, pass: false, passive: false, time, memory: previousMemoryModel || DEFAULT_MEMORY_MODEL };
     }
     if (review.subreview === 'kanji') {
