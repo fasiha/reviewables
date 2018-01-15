@@ -104,7 +104,18 @@ function reviewableToReview(reviewable: Reviewable, logs: QuizResult[]): Review 
 //
 // Display review
 //
+function printReviewable(reviewable:Reviewable) {
+    console.log(`${ruby.furiganaStringToPlain(reviewable.fact.furigana)} : ${
+        ruby.furiganaStringToReading(reviewable.fact.furigana)}: ${reviewable.fact.meaning}`);
+    // console.log(`Visit ${headerToHash(reviewable.header)}`);
+}
 function presentQuiz(review: Review, reviewables: Reviewable[]): QuizMetadata {
+    if (!review.previousMemory) {
+        // first time
+        console.log('¡New item!');
+        printReviewable(review.reviewable);
+        console.log('After practicing, complete the following quiz.\n')
+    }
     if (review.subreview === 'kanji') {
         console.log(`Which of the following is the kanji for: ${ruby.furiganaStringToReading(review.reviewable.fact.furigana)}`);
         let randIdx = Array.from(Array(4), (_, i) => Math.floor(Math.random() * reviewables.length));
@@ -131,9 +142,7 @@ function gradeAndDisplay(result: string, quiz: QuizMetadata, review: Review, rev
     let previousTime = review.previousTime ? new Date(review.previousTime) : review.previousTime;
     if (result.indexOf('?') >= 0) {
         // don't know
-        console.log(`${ruby.furiganaStringToPlain(review.reviewable.fact.furigana)} : ${
-            ruby.furiganaStringToReading(review.reviewable.fact.furigana)}: ${review.reviewable.fact.meaning}`);
-        // console.log(`Visit ${headerToHash(review.reviewable.header)}`);
+        printReviewable(review.reviewable);
         return { result, quiz, review, pass: false, passive: false, time, memory: previousMemoryModel || DEFAULT_MEMORY_MODEL };
     }
     if (review.subreview === 'kanji') {
