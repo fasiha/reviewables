@@ -9,7 +9,8 @@ import * as ruby from './ruby';
 import logReview from './globalLogger';
 import loadReviews from './loadReviews';
 import { ebisu, EbisuObject } from "./ebisu";
-import { DEFAULT_ECDH_CURVE } from 'tls';
+import fullwidthToHalf from './fullwidthToHalf';
+
 //
 // PARSING
 //
@@ -104,7 +105,7 @@ function reviewableToReview(reviewable: Reviewable, logs: QuizResult[]): Review 
 //
 // Display review
 //
-function printReviewable(reviewable:Reviewable) {
+function printReviewable(reviewable: Reviewable) {
     console.log(`${ruby.furiganaStringToPlain(reviewable.fact.furigana)} : ${
         ruby.furiganaStringToReading(reviewable.fact.furigana)}: ${reviewable.fact.meaning}`);
     // console.log(`Visit ${headerToHash(reviewable.header)}`);
@@ -146,7 +147,7 @@ function gradeAndDisplay(result: string, quiz: QuizMetadata, review: Review, rev
         return { result, quiz, review, pass: false, passive: false, time, memory: previousMemoryModel || DEFAULT_MEMORY_MODEL };
     }
     if (review.subreview === 'kanji') {
-        let idx = validateNumber(result) - 1;
+        let idx = (validateNumber(result) || validateNumber(fullwidthToHalf(result))) - 1;
         let selected = quiz[idx];
         if (selected && ruby.furiganaStringToPlain(selected.fact.furigana) === ruby.furiganaStringToPlain(review.reviewable.fact.furigana)) {
             console.log('¡¡¡You juiced it!!! 😍');
