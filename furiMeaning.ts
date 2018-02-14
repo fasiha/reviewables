@@ -118,6 +118,8 @@ function presentQuiz(review: Review, reviewables: Reviewable[]): QuizMetadata {
     console.log('¡New item!');
     printReviewable(review.reviewable);
     console.log('After practicing, complete the following quiz.\n')
+  } else {
+    console.log('Recall probability: ' + review.recallProbability);
   }
   if (review.subreview === 'kanji') {
     console.log(
